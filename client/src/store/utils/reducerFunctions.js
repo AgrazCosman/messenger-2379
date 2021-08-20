@@ -14,8 +14,9 @@ export const addMessageToStore = (state, payload) => {
   return state.map((convo) => {
     let newConvo = JSON.parse(JSON.stringify(convo));
     if (convo.id === message.conversationId) {
-        
+      newConvo.messages.reverse();
       newConvo.messages.push(message);
+      newConvo.messages.reverse();
       newConvo.latestMessageText = message.text;
       return newConvo;
     } else {
