@@ -1,11 +1,28 @@
+export const clearNotificationsFromStore = (state, payload) => {
+    const { conversation } = payload;
+
+    return state.map( (convo) =>{
+        if (convo.id === conversation.id) {
+            let newConvo = {...convo};
+            newConvo.unreadMessageCount = 0;
+            return newConvo;
+        } else {
+            return convo;
+        }
+    });
+}
+
 export const addMessageToStore = (state, payload) => {
   const { message, sender } = payload;
+
   // if sender isn't null, that means the message needs to be put in a brand new convo
-  if (sender !== null) {
+  if (sender !== null ) {
+      
     const newConvo = {
       id: message.conversationId,
       otherUser: sender,
       messages: [message],
+      unreadMessageCount: 1
     };
     newConvo.latestMessageText = message.text;
     return [newConvo, ...state];
@@ -16,6 +33,9 @@ export const addMessageToStore = (state, payload) => {
       let newConvo = {...convo};
       newConvo.messages.push(message);
       newConvo.latestMessageText = message.text;
+      if ( message.senderId === newConvo.otherUser.id) {
+          newConvo.unreadMessageCount = newConvo.unreadMessageCount+1;
+      }
       return newConvo;
     } else {
       return convo;
